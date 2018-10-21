@@ -24,3 +24,15 @@
 {
     height: 35px;
 }
+
+.messageDiv
+{
+    float: left;
+    padding-left: 30px;
+}
+
+.messageElement
+{
+    color: red;
+    font: bolder;
+}
