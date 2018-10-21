@@ -1,0 +1,40 @@
+.formheaderClass
+{
+    padding-bottom: 5px;
+}
+
+.descFormClass
+{
+    float: left;
+    padding-right: 10px;
+}
+
+.descTextFormClass
+{
+    text-align: right;
+    height: 35px;
+}
+
+.formInputClass
+{
+    float: left;
+}
+
+.formDivClass
+{
+    height: 35px;
+}
+
+.errClass
+{
+    float: left;
+    padding-right: 10px;
+    font-size: 12px;
+    display:inline-block;
+    color: red;
+}
+
+.errTextClass
+{
+    height: 35px;
+}

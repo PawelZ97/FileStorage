@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>PI</title>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='baseStyle.css') }}>
+    {% block header %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="pageClass">
+        <div class="headerClass">
+            <h1>Programowanie internetowe</h1>
+        </div>
+        <div class="navClass">
+            <nav>
+                <div class="navLinkClass">
+                    <a href="https://isod.ee.pw.edu.pl">ISOD</a>
+                </div>
+                <div class="navLinkClass">
+                    <a href="/zychp/base">Base</a>
+                </div>
+                <div class="navLinkClass">
+                    <a href="/zychp/register">Register</a>
+                </div>
+                <div class="navLinkClass">
+                    <a href="/zychp/login">Login</a>
+                </div>
+                <div class="navLinkClass">
+                    <a href="/zychp/login/fileslist">Files</a>
+                </div>
+                <div class="navLinkClass">
+                    <a href="/zychp/login/upload">Upload</a>
+                </div>
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+        <div class="mainClass">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer>
+            PI 2018 | Paweł Zych
+        </footer>
+    </div>
+</body>
+
+</html>

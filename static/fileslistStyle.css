@@ -1,0 +1,26 @@
+.formheaderClass
+{
+    padding-bottom: 5px;
+}
+
+.descFormClass
+{
+    float: left;
+    padding-right: 10px;
+}
+
+.descTextFormClass
+{
+    text-align: right;
+    height: 35px;
+}
+
+.formInputClass
+{
+    float: left;
+}
+
+.formDivClass
+{
+    height: 35px;
+}

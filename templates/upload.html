@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<link rel="stylesheet" type="text/css" href={{ url_for('static', filename='uploadStyle.css') }}>
+{% endblock %}
+
+{% block content %}
+<div class="formClass">
+    <div class="formheaderClass">
+        <h3>Formularz tworzenia nowego konta:</h3>
+    </div>
+    <div class="descFormClass">
+        <div class="descTextFormClass"> Plik 1: </div>
+        <div class="descTextFormClass"> Plik 2: </div>
+        <div class="descTextFormClass"> Plik 3: </div>
+        <div class="descTextFormClass"> Plik 4: </div>
+        <div class="descTextFormClass"> Plik 5: </div>
+    </div>
+    <div class="formInputClass">
+        <section>
+            <form id="formRegister" method="POST" action="http://edi.iem.pw.edu.pl/chaberb/register/user/" enctype="multipart/form-data"
+                onsubmit="return false;">
+                <div class="formDivClass"> <input class=".formElement" name="file1" type="file" /></div>
+                <div class="formDivClass"> <input class=".formElement" name="file2" type="file" /></div>
+                <div class="formDivClass"> <input class=".formElement" name="file3" type="file" /></div>
+                <div class="formDivClass"> <input class=".formElement" name="file4" type="file" /></div>
+                <div class="formDivClass"> <input class=".formElement" name="file5" type="file" /></div>
+
+                <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"
+                        onclick="val()" />
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="errClass">
+        <div id="firstnameErr" class="errTextClass"> </div>
+    </div>
+    <div style="clear:both"></div>
+</div>
+{% endblock %}
