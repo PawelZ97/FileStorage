@@ -3,6 +3,8 @@ from werkzeug.utils import secure_filename
 import json
 import os
 
+#SESSION_COOKIE_SECURE = True
+
 app = Flask(__name__)
 app.secret_key = b'q2qeh827287[/234'
 dbfile = open('database.json', 'r')
@@ -58,8 +60,8 @@ def filesList():
         listed_files = listUserFiles(username)
         for i in range(len(listed_files), 5):
             listed_files.append("Brak pliku")
-        return render_template("fileslist.html", username=username, file1=userpath+listed_files[0],
-                               file2=userpath+listed_files[1],  file3=userpath+listed_files[2], file4=userpath+listed_files[3], file5=userpath+listed_files[4])
+        return render_template("fileslist.html", username=username, file1=listed_files[0],
+                               file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     return render_template("base.html", message='Nie zalogowano.')
 
 
