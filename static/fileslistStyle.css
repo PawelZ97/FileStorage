@@ -24,3 +24,14 @@
 {
     height: 35px;
 }
+
+.deleteList
+{
+    float: left;
+    padding-left: 30px
+}
+
+.deleteElement
+{
+    height: 35px;
+}

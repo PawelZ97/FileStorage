@@ -41,12 +41,20 @@ def logout():
     return redirect('/zychp/login')
 
 
-@app.route('/zychp/login/fileslist')
+@app.route('/zychp/login/fileslist', methods=['GET', 'POST'])
 def filesList():
     username = checkUser()
     if (username):
         crateUploadDirectoryIfNotExist(username)
         userpath = 'userfiles/' + username + '/'
+        listed_files = listUserFiles(username)
+        for i in range(len(listed_files), 5):
+            listed_files.append("Brak pliku")
+        if request.method == 'POST':
+            for element in request.form:
+                index_to_del = int(element)
+                if(listed_files[index_to_del] != "Brak pliku"):
+                    os.remove(userpath + listed_files[index_to_del])
         listed_files = listUserFiles(username)
         for i in range(len(listed_files), 5):
             listed_files.append("Brak pliku")
@@ -76,7 +84,7 @@ def upload():
                     f.save(userpath + secure_filename(f.filename))
                     n_uploaded += 1
                 else:
-                    return  redirect('/zychp/login/filelist')
+                    return  redirect('/zychp/login/fileslist')
             return redirect('/zychp/login/fileslist')
         else:
             return render_template("upload.html", username=username, n_to_upload=n_to_upload)

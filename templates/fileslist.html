@@ -26,6 +26,16 @@
     <div class="fileElement"> <a download class="fileElement" href="{{ file4 }}" target="blank"> {{ file4 }} </a> </div>
     <div class="fileElement"> <a download class="fileElement" href="{{ file5 }}" target="blank"> {{ file5 }} </a> </div>
   </div>
+  <div class="deleteList">
+      <form id="deleteForm" method="POST" action="" enctype="multipart/form-data">
+        <div class="deleteElement"> <input name="0" type="checkbox" /></div>
+        <div class="deleteElement"> <input name="1" type="checkbox" /></div>
+        <div class="deleteElement"> <input name="2" type="checkbox" /></div>
+        <div class="deleteElement"> <input name="3" type="checkbox" /></div>
+        <div class="deleteElement"> <input name="4" type="checkbox" /></div>
+        <div class="formDivClass"> <input id="submitForm" class=".formElement" type="submit" value="Usun"/></div>
+      </form>
+    </div>
   <div style="clear:both"></div>
 </div>
 {% endblock %}
