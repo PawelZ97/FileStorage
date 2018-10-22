@@ -1,6 +1,7 @@
 from flask import Flask, session, request, redirect, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-import json, os
+import json
+import os
 
 app = Flask(__name__)
 app.secret_key = b'q2qeh827287[/234'
@@ -44,34 +45,41 @@ def logout():
 def filesList():
     username = checkUser()
     if (username):
+        crateUploadDirectoryIfNotExist(username)
         userpath = 'userfiles/' + username + '/'
         listed_files = listUserFiles(username)
-        for i in range(len(listed_files),5):
+        for i in range(len(listed_files), 5):
             listed_files.append("Brak pliku")
-        return render_template("fileslist.html", username=username, file1 = userpath+listed_files[0],  
-        file2 = userpath+listed_files[1],  file3 = userpath+listed_files[2], file4 = userpath+listed_files[3], file5 = userpath+listed_files[4])
+        return render_template("fileslist.html", username=username, file1=userpath+listed_files[0],
+                               file2=userpath+listed_files[1],  file3=userpath+listed_files[2], file4=userpath+listed_files[3], file5=userpath+listed_files[4])
     return render_template("base.html", message='Nie zalogowano.')
 
+
 @app.route('/zychp/login/userfiles/<path:filename>', methods=['GET', 'POST'])
-def download(filename):    
+def download(filename):
     return send_from_directory(directory='userfiles', filename=filename)
+
 
 @app.route('/zychp/login/upload', methods=['GET', 'POST'])
 def upload():
     username = checkUser()
     if (username):
         crateUploadDirectoryIfNotExist(username)
-        num_uploaded_files = len(listUserFiles(username))
-        num_possible_to_upload = 5-num_uploaded_files
+        n_uploaded_files = len(listUserFiles(username))
+        n_to_upload = 5-n_uploaded_files
         if request.method == 'POST':
             userpath = 'userfiles/' + username + '/'
-            for i in range(1,num_possible_to_upload+1):
-                f = request.files['file'+str(i)]
-                print(f)
-                f.save(userpath + secure_filename(f.filename))
+            n_uploaded = 0
+            for filee in request.files:
+                if(n_uploaded < n_to_upload):
+                    f = request.files[filee]
+                    f.save(userpath + secure_filename(f.filename))
+                    n_uploaded += 1
+                else:
+                    return  redirect('/zychp/login/filelist')
             return redirect('/zychp/login/fileslist')
         else:
-            return render_template("upload.html", username=username, num_possible_to_upload = num_possible_to_upload)
+            return render_template("upload.html", username=username, n_to_upload=n_to_upload)
     return render_template("base.html", message='Nie zalogowano.')
 
 
@@ -91,9 +99,11 @@ def checkUser():
             return username
     return False
 
+
 def listUserFiles(username):
     userpath = 'userfiles/' + username + '/'
-    return  os.listdir(userpath)
+    return os.listdir(userpath)
+
 
 def crateUploadDirectoryIfNotExist(username):
     userpath = 'userfiles/' + username + '/'
