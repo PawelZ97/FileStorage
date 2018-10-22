@@ -9,7 +9,7 @@
     <div class="formheaderClass">
         <a href="/zychp/login/logout">Wyloguj</a><br>
         <br>
-        Witaj {{ username }}!<br>
+        Witaj {{ username }}! Możesz wgrać jeszcze {{num_possible_to_upload}} plików<br>
         <h3>Dodaj pliki:</h3>
     </div>
     <div class="descFormClass">
@@ -21,16 +21,14 @@
     </div>
     <div class="formInputClass">
         <section>
-            <form id="formRegister" method="POST" action="http://edi.iem.pw.edu.pl/chaberb/register/user/" enctype="multipart/form-data"
-                onsubmit="return false;">
+            <form id="formRegister" method="POST" action="" enctype="multipart/form-data">
                 <div class="formDivClass"> <input class=".formElement" name="file1" type="file" /></div>
                 <div class="formDivClass"> <input class=".formElement" name="file2" type="file" /></div>
                 <div class="formDivClass"> <input class=".formElement" name="file3" type="file" /></div>
                 <div class="formDivClass"> <input class=".formElement" name="file4" type="file" /></div>
                 <div class="formDivClass"> <input class=".formElement" name="file5" type="file" /></div>
 
-                <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"
-                        onclick="val()" />
+                <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"/>
                 </div>
             </form>
         </section>

@@ -3,24 +3,24 @@
     padding-bottom: 5px;
 }
 
-.descFormClass
+.desc
 {
     float: left;
     padding-right: 10px;
 }
 
-.descTextFormClass
+.descElement
 {
     text-align: right;
     height: 35px;
 }
 
-.formInputClass
+.fileList
 {
     float: left;
 }
 
-.formDivClass
+.fileElement
 {
     height: 35px;
 }
