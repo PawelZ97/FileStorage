@@ -3,15 +3,13 @@ from werkzeug.utils import secure_filename
 import json
 import os
 
-#SESSION_COOKIE_SECURE = True
-
 app = Flask(__name__)
-app.secret_key = b'q2qeh827287[/234'
-dbfile = open('database.json', 'r')
-database = json.loads(dbfile.read())
 
+app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_PATH'] = "/zychp/login"
 
-@app.route('/zychp/login/base')
+@app.route('/zychp/login/base') 
 def baseTest():
     return render_template("base.html")
 
@@ -23,11 +21,11 @@ def registerTest():
 
 @app.route('/zychp/login/', methods=['GET', 'POST'])
 def login():
-    if (checkUser()):
+    if (getUser()):
         return render_template("base.html", message="Już zalogowany.")
     else:
         if request.method == 'POST':
-            if validateLogin():
+            if doLogin():
                 return redirect("/zychp/login/fileslist")
             else:
                 return render_template("login.html", error="Niepoprawny login lub/i hasło")
@@ -37,7 +35,7 @@ def login():
 
 @app.route('/zychp/login/logout')
 def logout():
-    username = checkUser()
+    username = getUser()
     if (username):
         session.pop(username)
     return redirect('/zychp/login')
@@ -45,7 +43,7 @@ def logout():
 
 @app.route('/zychp/login/fileslist', methods=['GET', 'POST'])
 def filesList():
-    username = checkUser()
+    username = getUser()
     if (username):
         crateUploadDirectoryIfNotExist(username)
         userpath = 'userfiles/' + username + '/'
@@ -72,7 +70,7 @@ def download(filename):
 
 @app.route('/zychp/login/upload', methods=['GET', 'POST'])
 def upload():
-    username = checkUser()
+    username = getUser()
     if (username):
         crateUploadDirectoryIfNotExist(username)
         n_uploaded_files = len(listUserFiles(username))
@@ -93,17 +91,17 @@ def upload():
     return render_template("base.html", message='Nie zalogowano.')
 
 
-def validateLogin():
+def doLogin():
     username = request.form['username']
-    for user in database['userslist']:
+    for user in accesDatabase()['userslist']:
         if request.form['password'] == user['password'] and username == user['login']:
             session[username] = True
             return True
     return False
 
 
-def checkUser():
-    for user in database['userslist']:
+def getUser():
+    for user in accesDatabase()['userslist']:
         username = user['login']
         if (session.get(username)):
             return username
@@ -120,3 +118,8 @@ def crateUploadDirectoryIfNotExist(username):
     if not os.path.exists(userpath):
         os.makedirs(userpath)
     return
+
+def accesDatabase():
+    dbfile = open('database.json', 'r')
+    database = json.loads(dbfile.read())
+    return database
