@@ -2,12 +2,15 @@ from flask import Flask, session, request, redirect, render_template, send_from_
 from werkzeug.utils import secure_filename
 import json
 import os
+import uuid
 
 app = Flask(__name__)
 
 app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
-app.config['SESSION_COOKIE_SECURE'] = True
+#app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_PATH'] = "/zychp/login"
+
+logged_sessions = {}
 
 @app.route('/zychp/login/base') 
 def baseTest():
@@ -21,7 +24,7 @@ def registerTest():
 
 @app.route('/zychp/login/', methods=['GET', 'POST'])
 def login():
-    if (getUser()):
+    if (checkUserLogin()):
         return render_template("base.html", message="Już zalogowany.")
     else:
         if request.method == 'POST':
@@ -35,17 +38,17 @@ def login():
 
 @app.route('/zychp/login/logout')
 def logout():
-    username = getUser()
+    username = checkUserLogin()
     if (username):
-        session.pop(username)
+        session.pop(username,None)
+        logged_sessions.pop(username)
     return redirect('/zychp/login')
 
 
 @app.route('/zychp/login/fileslist', methods=['GET', 'POST'])
 def filesList():
-    username = getUser()
+    username = checkUserLogin()
     if (username):
-        crateUploadDirectoryIfNotExist(username)
         userpath = 'userfiles/' + username + '/'
         listed_files = listUserFiles(username)
         for i in range(len(listed_files), 5):
@@ -70,9 +73,8 @@ def download(filename):
 
 @app.route('/zychp/login/upload', methods=['GET', 'POST'])
 def upload():
-    username = getUser()
+    username = checkUserLogin()
     if (username):
-        crateUploadDirectoryIfNotExist(username)
         n_uploaded_files = len(listUserFiles(username))
         n_to_upload = 5-n_uploaded_files
         if request.method == 'POST':
@@ -95,18 +97,31 @@ def doLogin():
     username = request.form['username']
     for user in accesDatabase()['userslist']:
         if request.form['password'] == user['password'] and username == user['login']:
-            session[username] = True
+            user_ssid = uuid.uuid4().int
+            session[username] = user_ssid
+            logged_sessions[username] = user_ssid
+            crateUploadDirectoryIfNotExist(username)
             return True
     return False
 
 
-def getUser():
+def checkUserLogin():
+    print("SesDir: {}".format(logged_sessions))
     for user in accesDatabase()['userslist']:
         username = user['login']
-        if (session.get(username)):
-            return username
-    return False
+        print(username)
 
+        if username in logged_sessions:
+            print("Server uuid:{}".format(logged_sessions[username]))
+            print("Local uuid:{}".format(session.get(username)))
+
+            if (session.get(username) == logged_sessions[username]): 
+                print("User: {} logged.".format(username))
+                return username
+            else:
+                print("Cookies not match")
+    print("User not found")
+    return False
 
 def listUserFiles(username):
     userpath = 'userfiles/' + username + '/'
