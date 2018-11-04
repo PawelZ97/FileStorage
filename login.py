@@ -7,7 +7,7 @@ import uuid
 app = Flask(__name__)
 
 app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
-#app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_PATH'] = "/zychp/login"
 
 logged_sessions = {}
@@ -40,7 +40,8 @@ def login():
 def logout():
     username = checkUserLogin()
     if (username):
-        session.pop(username,None)
+        session.pop('username',None)
+        session.pop('uuid',None)
         logged_sessions.pop(username)
     return redirect('/zychp/login')
 
@@ -49,18 +50,14 @@ def logout():
 def filesList():
     username = checkUserLogin()
     if (username):
-        userpath = 'userfiles/' + username + '/'
+        userpath = getUserDirPath(username)
         listed_files = listUserFiles(username)
-        for i in range(len(listed_files), 5):
-            listed_files.append("Brak pliku")
         if request.method == 'POST':
             for element in request.form:
                 index_to_del = int(element)
                 if(listed_files[index_to_del] != "Brak pliku"):
                     os.remove(userpath + listed_files[index_to_del])
         listed_files = listUserFiles(username)
-        for i in range(len(listed_files), 5):
-            listed_files.append("Brak pliku")
         return render_template("fileslist.html", username=username, file1=listed_files[0],
                                file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     return render_template("base.html", message='Nie zalogowano.')
@@ -75,10 +72,9 @@ def download(filename):
 def upload():
     username = checkUserLogin()
     if (username):
-        n_uploaded_files = len(listUserFiles(username))
-        n_to_upload = 5-n_uploaded_files
+        n_to_upload = 5-countUserFiles(username)
         if request.method == 'POST':
-            userpath = 'userfiles/' + username + '/'
+            userpath = getUserDirPath(username)
             n_uploaded = 0
             for filee in request.files:
                 if(n_uploaded < n_to_upload):
@@ -95,46 +91,72 @@ def upload():
 
 def doLogin():
     username = request.form['username']
-    for user in accesDatabase()['userslist']:
-        if request.form['password'] == user['password'] and username == user['login']:
-            user_ssid = uuid.uuid4().int
-            session[username] = user_ssid
-            logged_sessions[username] = user_ssid
+    users_credentials = getUsersCredentials()
+
+    for user in users_credentials:
+        if username == user and request.form['password'] == users_credentials[user]:
+            user_uuid = uuid.uuid4().int
+            session['username'] = username
+            session['uuid'] = user_uuid
+            logged_sessions[username] = user_uuid
             crateUploadDirectoryIfNotExist(username)
             return True
     return False
 
 
 def checkUserLogin():
-    print("SesDir: {}".format(logged_sessions))
-    for user in accesDatabase()['userslist']:
-        username = user['login']
-        print(username)
+    users_credentials = getUsersCredentials()
+    if(session):
+        cookie_username = session['username']
+        print("Username: {}".format(cookie_username))
+        print("SesDir: {}".format(logged_sessions))
 
-        if username in logged_sessions:
-            print("Server uuid:{}".format(logged_sessions[username]))
-            print("Local uuid:{}".format(session.get(username)))
+        if cookie_username in users_credentials:
 
-            if (session.get(username) == logged_sessions[username]): 
-                print("User: {} logged.".format(username))
-                return username
+            if cookie_username in logged_sessions:
+                print("Server uuid:{}".format(logged_sessions[cookie_username]))
+            print("Reque  uuid:{}".format(session['uuid']))
+
+            if cookie_username in logged_sessions:
+                if (logged_sessions[cookie_username] == session['uuid']):
+                    print("Cookie OK")
+                    return cookie_username
+                else:
+                    print("Niezgodność Cookie")
+                    return False
             else:
-                print("Cookies not match")
-    print("User not found")
-    return False
+                print("Nie zalogowany")
+                return False
+        else:
+            print("Brak loginu w bazie")
+            return False
+    else:
+        print("Brak ciastka")
+        return False
 
 def listUserFiles(username):
-    userpath = 'userfiles/' + username + '/'
-    return os.listdir(userpath)
+    userpath = getUserDirPath(username)
+    listed_files = os.listdir(userpath)
+    for i in range(len(listed_files), 5):
+        listed_files.append("Brak pliku")
+    return listed_files
 
+def countUserFiles(username):
+    return len(os.listdir(getUserDirPath(username)))
 
 def crateUploadDirectoryIfNotExist(username):
-    userpath = 'userfiles/' + username + '/'
+    userpath = getUserDirPath(username)
     if not os.path.exists(userpath):
         os.makedirs(userpath)
     return
 
-def accesDatabase():
+def getUserDirPath(username):
+    return 'userfiles/' + username + '/'
+
+def getUsersCredentials():
     dbfile = open('database.json', 'r')
     database = json.loads(dbfile.read())
-    return database
+    users_credentials = {}
+    for user_data in database['userslist']:
+        users_credentials[user_data['login']] =  user_data['password']      
+    return users_credentials
