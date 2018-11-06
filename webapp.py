@@ -42,8 +42,8 @@ def logout():
         cookie_uuid = session['uuid']
         red.hdel('zychp:webapp:'+ cookie_uuid, 'login')
 
-        #session.pop('username',None)
-        #session.pop('uuid',None)
+        session.pop('username',None)
+        session.pop('uuid',None)
     return redirect('/zychp/webapp/login')
 
 
