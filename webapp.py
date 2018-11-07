@@ -1,6 +1,6 @@
 from flask import Flask, session, request, redirect, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-import json, uuid, redis, jwt
+import json, uuid, redis, jwt, os
 
 app = Flask(__name__)
 
@@ -48,17 +48,15 @@ def logout():
 
 
 
-@app.route('/zychp/webapp/fileslist', methods=['GET', 'POST'])
+@app.route('/zychp/webapp/fileslist')
 def filesList():
     username = checkUserLogin()
     if (username):
         print("Pobierz liste")
-        if request.method == 'POST':
-            print("POST fileslist")
-        else:
-            return render_template("fileslist.html", username=username)
-            #return render_template("fileslist.html", username=username, file1=listed_files[0],
-            #                   file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
+        userpath = getUserDirPath(username) # TMP
+        listed_files = listUserFiles(username) # TMP
+        return render_template("fileslist.html", username=username, file1=listed_files[0],
+                              file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     else:                  
         return render_template("base.html", message='Nie zalogowano.')
 
@@ -72,10 +70,8 @@ def upload():
             return redirect('/zychp/webapp/fileslist')
         else:
             jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
-            print("jwt_value: {}".format(jwt_value))
 
-            decoded = jwt.decode(jwt_value, secret_jwt, algorithms='HS256')
-            print("decoded: {}".format(decoded))
+            print("jwt_value: {}".format(jwt_value))
 
             return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
@@ -135,3 +131,21 @@ def getUsersCredentials():
     for user_data in database['userslist']:
         users_credentials[user_data['login']] =  user_data['password']      
     return users_credentials
+
+
+
+
+
+def listUserFiles(username): # TMP
+    userpath = getUserDirPath(username)
+    listed_files = os.listdir(userpath)
+    for i in range(len(listed_files), 5):
+        listed_files.append("Brak pliku")
+    return listed_files
+
+def countUserFiles(username): # TMP
+    return len(os.listdir(getUserDirPath(username)))
+
+
+def getUserDirPath(username): # TMP
+    return 'userfiles/' + username + '/'

@@ -10,20 +10,6 @@ app = Flask(__name__)
 app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
 secret_jwt= 'testSecret'
 
-username = "Dummy"
-
-@app.route('/zychp/dl/jwtest', methods=['POST'])
-def jwtest():
-    print("JWTest")
-    encoded = request.form['jwt']
-    print("jwt_value: {}".format(encoded))
-    decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
-    print("decoded: {}".format(decoded))
-    return decoded['user']
-
-@app.route('/zychp/dl/test')
-def test():
-    return "Hello"
 
 @app.route('/zychp/dl/getfileslist', methods=['POST'])
 def getFilesList(username):
@@ -35,8 +21,10 @@ def getFilesList(username):
 
 @app.route('/zychp/dl/download/<path:filename>', methods=['POST'])
 def download(filename):
-    if (auth()):
+    username = auth()['user']
+    if (username):
          userpath = getUserDirPath(username)
+         print("File downloaded")
          return send_from_directory(directory=userpath, filename=filename)
     else:
         return "No auth"
@@ -44,7 +32,9 @@ def download(filename):
 
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():
-    if (auth()):
+    username = auth()['user']
+    crateUploadDirectoryIfNotExist(username)
+    if (username):
         n_to_upload = 5-countUserFiles(username)
         userpath = getUserDirPath(username)
         n_uploaded = 0
@@ -53,7 +43,8 @@ def upload():
                 f = request.files[filee]
                 f.save(userpath + secure_filename(f.filename))
                 n_uploaded += 1
-        return "Files uploaded"
+        print("Files uploaded")
+        return redirect("/zychp/webapp/fileslist")
     else:
         return "No auth"
      
@@ -78,4 +69,6 @@ def getUserDirPath(username):
     return 'userfiles/' + username + '/'
 
 def auth():
-    return True
+    encoded = request.form['jwt']
+    decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
+    return decoded

@@ -35,3 +35,14 @@
 {
     height: 35px;
 }
+
+.downloadList
+{
+    float: left;
+    padding-left: 30px
+}
+
+.downloadElement
+{
+    height: 35px;
+}
