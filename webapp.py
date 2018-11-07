@@ -12,6 +12,8 @@ secret_jwt = open('NoSecretThere.cfg', 'rb').read().decode('utf-8')
 
 red = redis.Redis()
 
+listed_files=["Brak pliku","Brak pliku","Brak pliku","Brak pliku","Brak pliku"]
+
 @app.route('/zychp/webapp/base') 
 def baseTest():
     return render_template("base.html")
@@ -53,25 +55,32 @@ def filesList():
     username = checkUserLogin()
     if (username):
         print("Pobierz liste")
-        listed_files = listUserFiles(username) # TMP
         jwt_value = getToken(username)
         return render_template("fileslist.html", username=username, jwt_value=jwt_value, file1=listed_files[0],
                               file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     else:                  
-        return render_template("base.html", message='Nie zalogowano.')
+        return redirect('/zychp/webapp/login')
 
 
 @app.route('/zychp/webapp/upload', methods=['GET', 'POST'])
 def upload():
     username = checkUserLogin()
     if (username):
-        n_to_upload = 5 - countUserFiles(username)     
+        n_to_upload = 5 - countFiles()    
         jwt_value = getToken(username)
         print("jwt_value: {}".format(jwt_value))
         return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
 
-
+@app.route('/zychp/webapp/getfiles/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>', methods=['GET', 'POST'])
+def getfiles(file1,file2,file3,file4,file5):
+    del listed_files[:]
+    listed_files.append(file1)
+    listed_files.append(file2)
+    listed_files.append(file3)
+    listed_files.append(file4)
+    listed_files.append(file5)
+    return redirect('/zychp/webapp/fileslist')
 
 def doLogin():
     username = request.form['username']
@@ -85,7 +94,7 @@ def doLogin():
 
             red.hset('zychp:webapp:'+ user_uuid, 'login', username)
 
-            crateUploadDirectoryIfNotExist(username)
+            emptyLocalList()
 
             return True
     return False
@@ -131,25 +140,18 @@ def getToken(username):
      + datetime.timedelta(seconds=100)},secret_jwt, algorithm='HS256').decode('utf-8')
     return jwt_value
 
+def countFiles():
+    counter=0
+    for file in listed_files:
+        if(file!="Brak pliku"):
+            counter+=1
+    return counter
 
-
-def listUserFiles(username): # TMP
-    userpath = getUserDirPath(username)
-    listed_files = os.listdir(userpath)
-    for i in range(len(listed_files), 5):
-        listed_files.append("Brak pliku")
-    return listed_files
-
-def countUserFiles(username): # TMP
-    return len(os.listdir(getUserDirPath(username)))
-
-
-def getUserDirPath(username): # TMP
-    return 'userfiles/' + username + '/'
-
-
-def crateUploadDirectoryIfNotExist(username):
-    userpath = getUserDirPath(username)
-    if not os.path.exists(userpath):
-        os.makedirs(userpath)
+def emptyLocalList():
+    del listed_files[:]
+    listed_files.append("Brak pliku")
+    listed_files.append("Brak pliku")
+    listed_files.append("Brak pliku")
+    listed_files.append("Brak pliku")
+    listed_files.append("Brak pliku")
     return

@@ -28,8 +28,8 @@ def download(filename):
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():
     username = auth()
-    crateUploadDirectoryIfNotExist(username)
     if (username):
+        crateUploadDirectoryIfNotExist(username)
         n_to_upload = 5-countUserFiles(username)
         userpath = getUserDirPath(username)
         n_uploaded = 0
@@ -42,6 +42,19 @@ def upload():
         return redirect("/zychp/webapp/fileslist")
     else:
         return redirect("/zychp/webapp/fileslist")
+
+
+@app.route('/zychp/dl/getfiles', methods=['POST'])
+def getFiles():
+    username = auth()
+    if (username):
+        crateUploadDirectoryIfNotExist(username)
+        listed_files = listUserFiles(username)
+        print("Files uploaded")
+        return redirect("/zychp/webapp/getfiles/" + listed_files[0] + "/" + listed_files[1] + "/" + listed_files[2] + "/" + listed_files[3] + "/" + listed_files[4])
+    else:
+         return False
+
 
 
 def listUserFiles(username):

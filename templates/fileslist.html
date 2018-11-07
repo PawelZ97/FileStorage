@@ -9,7 +9,12 @@
   <div class="formheaderClass">
     <a href="/zychp/webapp/logout">Wyloguj</a><br>
     <br>
-    Witaj {{ username }}!<br>
+    Witaj {{ username }}!
+    <form id="downloadForm" method="POST" action="/zychp/dl/getfiles" enctype="multipart/form-data">
+      <input value="{{ jwt_value }}" name="jwt" type="hidden" />
+      <input type="submit" value="Odśwież listę plików" />
+    </form>
+    <br>
     <h3>Twoje pliki:</h3>
   </div>
   <div class="desc">
