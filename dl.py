@@ -8,7 +8,7 @@ import jwt
 app = Flask(__name__)
 
 app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
-secret_jwt= 'testSecret'
+secret_jwt = open('NoSecretThere.cfg', 'rb').read().decode('utf-8')
 
 @app.route('/zychp/dl/download/<path:filename>', methods=['POST'])
 def download(filename):
@@ -67,5 +67,9 @@ def getUserDirPath(username):
 
 def auth():
     encoded = request.form['jwt']
-    decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
-    return decoded
+    try:
+        decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
+        return decoded
+    except jwt.ExpiredSignatureError:
+        return False
+   

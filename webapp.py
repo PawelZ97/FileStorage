@@ -1,6 +1,6 @@
 from flask import Flask, session, request, redirect, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-import json, uuid, redis, jwt, os
+import json, uuid, redis, jwt, os, datetime 
 
 app = Flask(__name__)
 
@@ -8,7 +8,7 @@ app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_PATH'] = "/zychp/webapp"
 
-secret_jwt = 'testSecret'
+secret_jwt = open('NoSecretThere.cfg', 'rb').read().decode('utf-8')
 
 red = redis.Redis()
 
@@ -53,9 +53,8 @@ def filesList():
     username = checkUserLogin()
     if (username):
         print("Pobierz liste")
-        userpath = getUserDirPath(username) # TMP
         listed_files = listUserFiles(username) # TMP
-        jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
+        jwt_value = getToken(username)
         return render_template("fileslist.html", username=username, jwt_value=jwt_value, file1=listed_files[0],
                               file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     else:                  
@@ -66,8 +65,8 @@ def filesList():
 def upload():
     username = checkUserLogin()
     if (username):
-        jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
         n_to_upload = 5 - countUserFiles(username)     
+        jwt_value = getToken(username)
         print("jwt_value: {}".format(jwt_value))
         return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
@@ -90,7 +89,6 @@ def doLogin():
 
             return True
     return False
-
 
 def checkUserLogin():
     users_credentials = getUsersCredentials()
@@ -120,7 +118,6 @@ def checkUserLogin():
         print("Brak ciastka")
         return False
 
-
 def getUsersCredentials():
     dbfile = open('database.json', 'r')
     database = json.loads(dbfile.read())
@@ -129,6 +126,10 @@ def getUsersCredentials():
         users_credentials[user_data['login']] =  user_data['password']      
     return users_credentials
 
+def getToken(username):
+    jwt_value = jwt.encode({'user': username,'exp': datetime.datetime.utcnow()
+     + datetime.timedelta(seconds=100)},secret_jwt, algorithm='HS256').decode('utf-8')
+    return jwt_value
 
 
 
