@@ -10,24 +10,20 @@ app = Flask(__name__)
 app.config.from_pyfile('NoSecretThere.cfg')  # for SECRET_KEY
 secret_jwt= 'testSecret'
 
-
-@app.route('/zychp/dl/getfileslist', methods=['POST'])
-def getFilesList(username):
-    if (auth()):
-        return listUserFiles(username)
-    else:
-        return "No auth"
-
-
 @app.route('/zychp/dl/download/<path:filename>', methods=['POST'])
 def download(filename):
     username = auth()['user']
     if (username):
-         userpath = getUserDirPath(username)
-         print("File downloaded")
-         return send_from_directory(directory=userpath, filename=filename)
+        userpath = getUserDirPath(username)
+        if (filename!="Brak pliku"):
+            print("File downloaded")
+            return send_from_directory(directory=userpath, filename=filename, as_attachment=True)
+        else: 
+            print("Brak pliku")
+            return redirect("/zychp/webapp/fileslist")
     else:
-        return "No auth"
+        print("No auth")
+        return redirect("/zychp/webapp/fileslist")
    
 
 @app.route('/zychp/dl/upload', methods=['POST'])
@@ -46,7 +42,8 @@ def upload():
         print("Files uploaded")
         return redirect("/zychp/webapp/fileslist")
     else:
-        return "No auth"
+        print("No auth")
+        return redirect("/zychp/webapp/fileslist")
 
 
 def listUserFiles(username):

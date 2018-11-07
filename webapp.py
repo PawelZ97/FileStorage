@@ -65,15 +65,11 @@ def filesList():
 @app.route('/zychp/webapp/upload', methods=['GET', 'POST'])
 def upload():
     username = checkUserLogin()
-    jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
-    
-    n_to_upload = 5 - countUserFiles(username)
     if (username):
-        if request.method == 'POST':
-            return redirect('/zychp/webapp/fileslist')
-        else:
-            print("jwt_value: {}".format(jwt_value))
-            return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
+        jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
+        n_to_upload = 5 - countUserFiles(username)     
+        print("jwt_value: {}".format(jwt_value))
+        return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
 
 
@@ -90,7 +86,8 @@ def doLogin():
 
             red.hset('zychp:webapp:'+ user_uuid, 'login', username)
 
-            #crateUploadDirectoryIfNotExist(username)
+            crateUploadDirectoryIfNotExist(username)
+
             return True
     return False
 
@@ -149,3 +146,10 @@ def countUserFiles(username): # TMP
 
 def getUserDirPath(username): # TMP
     return 'userfiles/' + username + '/'
+
+
+def crateUploadDirectoryIfNotExist(username):
+    userpath = getUserDirPath(username)
+    if not os.path.exists(userpath):
+        os.makedirs(userpath)
+    return
