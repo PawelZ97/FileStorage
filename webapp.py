@@ -133,7 +133,6 @@ def getToken(username):
 
 
 
-
 def listUserFiles(username): # TMP
     userpath = getUserDirPath(username)
     listed_files = os.listdir(userpath)

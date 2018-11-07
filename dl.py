@@ -12,7 +12,7 @@ secret_jwt = open('NoSecretThere.cfg', 'rb').read().decode('utf-8')
 
 @app.route('/zychp/dl/download/<path:filename>', methods=['POST'])
 def download(filename):
-    username = auth()['user']
+    username = auth()
     if (username):
         userpath = getUserDirPath(username)
         if (filename!="Brak pliku"):
@@ -22,13 +22,12 @@ def download(filename):
             print("Brak pliku")
             return redirect("/zychp/webapp/fileslist")
     else:
-        print("No auth")
         return redirect("/zychp/webapp/fileslist")
    
 
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():
-    username = auth()['user']
+    username = auth()
     crateUploadDirectoryIfNotExist(username)
     if (username):
         n_to_upload = 5-countUserFiles(username)
@@ -42,7 +41,6 @@ def upload():
         print("Files uploaded")
         return redirect("/zychp/webapp/fileslist")
     else:
-        print("No auth")
         return redirect("/zychp/webapp/fileslist")
 
 
@@ -69,7 +67,11 @@ def auth():
     encoded = request.form['jwt']
     try:
         decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
-        return decoded
+        return decoded['user']
     except jwt.ExpiredSignatureError:
+        print("JWT przeterminowane")
+        return False
+    except jwt.exceptions.DecodeError:
+        print("JWT Zły podpis")
         return False
    
