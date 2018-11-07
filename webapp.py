@@ -1,6 +1,6 @@
 from flask import Flask, session, request, redirect, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-import json, uuid, redis, jwt, os, datetime 
+import json, uuid, redis, jwt, os, datetime, hashlib
 
 app = Flask(__name__)
 
@@ -17,6 +17,7 @@ listed_files=["Brak pliku","Brak pliku","Brak pliku","Brak pliku","Brak pliku"]
 @app.route('/zychp/webapp/base') 
 def baseTest():
     return render_template("base.html")
+
 
 @app.route('/zychp/webapp/register')
 def registerTest():
@@ -49,7 +50,6 @@ def logout():
     return redirect('/zychp/webapp/login')
 
 
-
 @app.route('/zychp/webapp/fileslist')
 def filesList():
     username = checkUserLogin()
@@ -72,7 +72,8 @@ def upload():
         return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
 
-@app.route('/zychp/webapp/getfiles/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>', methods=['GET', 'POST'])
+
+@app.route('/zychp/webapp/getfiles/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>')
 def getfiles(file1,file2,file3,file4,file5):
     del listed_files[:]
     listed_files.append(file1)
@@ -82,12 +83,14 @@ def getfiles(file1,file2,file3,file4,file5):
     listed_files.append(file5)
     return redirect('/zychp/webapp/fileslist')
 
+
 def doLogin():
     username = request.form['username']
     users_credentials = getUsersCredentials()
 
     for user in users_credentials:
-        if username == user and request.form['password'] == users_credentials[user]:
+        hashpass = hashlib.sha256(request.form['password'].encode()).hexdigest() 
+        if username == user and hashpass == users_credentials[user]:
             user_uuid = str(uuid.uuid4())
             session['username'] = username
             session['uuid'] = user_uuid
@@ -148,10 +151,5 @@ def countFiles():
     return counter
 
 def emptyLocalList():
-    del listed_files[:]
-    listed_files.append("Brak pliku")
-    listed_files.append("Brak pliku")
-    listed_files.append("Brak pliku")
-    listed_files.append("Brak pliku")
-    listed_files.append("Brak pliku")
+    listed_files[0:4] = "Brak pliku"
     return

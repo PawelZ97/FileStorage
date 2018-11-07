@@ -1,9 +1,7 @@
 from flask import Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
-import json
-import os
-import uuid
-import jwt
+import json, os, jwt
+
 
 app = Flask(__name__)
 
@@ -44,16 +42,16 @@ def upload():
         return redirect("/zychp/webapp/fileslist")
 
 
-@app.route('/zychp/dl/getfiles', methods=['POST'])
-def getFiles():
+@app.route('/zychp/dl/getfilesnames', methods=['POST'])
+def getFilesNames():
     username = auth()
     if (username):
         crateUploadDirectoryIfNotExist(username)
         listed_files = listUserFiles(username)
-        print("Files uploaded")
-        return redirect("/zychp/webapp/getfiles/" + listed_files[0] + "/" + listed_files[1] + "/" + listed_files[2] + "/" + listed_files[3] + "/" + listed_files[4])
+        print("List read")
+        return redirect("/zychp/webapp/readfilesnames/" + listed_files[0] + "/" + listed_files[1] + "/" + listed_files[2] + "/" + listed_files[3] + "/" + listed_files[4])
     else:
-         return False
+        redirect("/zychp/webapp/fileslist")
 
 
 
@@ -82,9 +80,9 @@ def auth():
         decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
         return decoded['user']
     except jwt.ExpiredSignatureError:
-        print("JWT przeterminowane")
+        print("JWT expired")
         return False
     except jwt.exceptions.DecodeError:
-        print("JWT Zły podpis")
+        print("JWT wrong signature")
         return False
    
