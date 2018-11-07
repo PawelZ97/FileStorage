@@ -12,6 +12,19 @@ secret_jwt= 'testSecret'
 
 username = "Dummy"
 
+@app.route('/zychp/dl/jwtest', methods=['POST'])
+def jwtest():
+    print("JWTest")
+    encoded = request.form['jwt']
+    print("jwt_value: {}".format(encoded))
+    decoded = jwt.decode(encoded, secret_jwt, algorithms='HS256')
+    print("decoded: {}".format(decoded))
+    return decoded['user']
+
+@app.route('/zychp/dl/test')
+def test():
+    return "Hello"
+
 @app.route('/zychp/dl/getfileslist', methods=['POST'])
 def getFilesList(username):
     if (auth()):

@@ -21,12 +21,13 @@
     </div>
     <div class="formInputClass">
         <section>
-            <form id="formRegister" method="POST" action="" enctype="multipart/form-data">
-                <div class="formDivClass"> <input class=".formElement" name="file1" type="file" /></div>
-                <div class="formDivClass"> <input class=".formElement" name="file2" type="file" /></div>
-                <div class="formDivClass"> <input class=".formElement" name="file3" type="file" /></div>
-                <div class="formDivClass"> <input class=".formElement" name="file4" type="file" /></div>
-                <div class="formDivClass"> <input class=".formElement" name="file5" type="file" /></div>
+            <form id="formRegister" method="POST" action="/zychp/dl/jwtest" enctype="multipart/form-data">
+                <div class="formDivClass"> <input class="formElement" name="file1" type="file" /></div>
+                <div class="formDivClass"> <input class="formElement" name="file2" type="file" /></div>
+                <div class="formDivClass"> <input class="formElement" name="file3" type="file" /></div>
+                <div class="formDivClass"> <input class="formElement" name="file4" type="file" /></div>
+                <div class="formDivClass"> <input class="formElement" name="file5" type="file" /></div>
+                <div class="formDivClass"> <input value="{{ jwt_value }}" name="jwt" type="hidden" /></div>
 
                 <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"/>
                 </div>

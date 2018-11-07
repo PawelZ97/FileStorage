@@ -1,5 +1,5 @@
 venv/
 userfiles/
-.vscode/settings.json
+.vscode/
 __pycache__/login.cpython-37.pyc
 NoSecretThere.cfg

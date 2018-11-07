@@ -47,6 +47,7 @@ def logout():
     return redirect('/zychp/webapp/login')
 
 
+
 @app.route('/zychp/webapp/fileslist', methods=['GET', 'POST'])
 def filesList():
     username = checkUserLogin()
@@ -70,8 +71,15 @@ def upload():
         if request.method == 'POST':
             return redirect('/zychp/webapp/fileslist')
         else:
-            return render_template("upload.html", username=username, n_to_upload=n_to_upload)
+            jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
+            print("jwt_value: {}".format(jwt_value))
+
+            decoded = jwt.decode(jwt_value, secret_jwt, algorithms='HS256')
+            print("decoded: {}".format(decoded))
+
+            return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
+
 
 
 def doLogin():
