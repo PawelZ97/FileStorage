@@ -81,8 +81,8 @@ def auth():
         return decoded['user']
     except jwt.ExpiredSignatureError:
         print("JWT expired")
-        return False
+        redirect("/zychp/webapp/fileslist")
     except jwt.exceptions.DecodeError:
         print("JWT wrong signature")
-        return False
+        redirect("/zychp/webapp/fileslist")
    

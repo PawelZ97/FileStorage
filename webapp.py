@@ -73,8 +73,8 @@ def upload():
     return render_template("base.html", message='Nie zalogowano.')
 
 
-@app.route('/zychp/webapp/getfiles/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>')
-def getfiles(file1,file2,file3,file4,file5):
+@app.route('/zychp/webapp/readfilesnames/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>')
+def readFilesNames(file1,file2,file3,file4,file5):
     del listed_files[:]
     listed_files.append(file1)
     listed_files.append(file2)
@@ -151,5 +151,7 @@ def countFiles():
     return counter
 
 def emptyLocalList():
-    listed_files[0:4] = "Brak pliku"
+    del listed_files[:]
+    for i in range(5):
+        listed_files.append("Brak pliku")
     return

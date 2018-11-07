@@ -7,14 +7,16 @@
 {% block content %}
 <div class="formClass">
   <div class="formheaderClass">
-    <a href="/zychp/webapp/logout">Wyloguj</a><br>
+    <a href="/zychp/webapp/logout">Wyloguj</a>
+    <br>
     <br>
     Witaj {{ username }}!
-    <form id="downloadForm" method="POST" action="/zychp/dl/getfiles" enctype="multipart/form-data">
+    <br>
+    <br>
+    <form id="downloadForm" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
       <input value="{{ jwt_value }}" name="jwt" type="hidden" />
       <input type="submit" value="Odśwież listę plików" />
     </form>
-    <br>
     <h3>Twoje pliki:</h3>
   </div>
   <div class="desc">
@@ -28,31 +30,31 @@
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file1 }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" class="linkButton" value="{{ file1 }}" />
+        <input type="submit" value="{{ file1 }}" />
       </form>
     </div>
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file2 }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" class="linkButton" value="{{ file2 }}" />
+        <input type="submit" value="{{ file2 }}" />
       </form>
     </div>
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file3 }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" class="linkButton" value="{{ file3 }}" />
+        <input type="submit" value="{{ file3 }}" />
       </form>
     </div>
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file4 }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" class="linkButton" value="{{ file4 }}" />
+        <input type="submit" value="{{ file4 }}" />
       </form>
     </div>
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file5 }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" class="linkButton" value="{{ file5 }}" />
+        <input type="submit" value="{{ file5 }}" />
       </form>
     </div>
   </div>
