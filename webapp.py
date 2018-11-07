@@ -55,7 +55,8 @@ def filesList():
         print("Pobierz liste")
         userpath = getUserDirPath(username) # TMP
         listed_files = listUserFiles(username) # TMP
-        return render_template("fileslist.html", username=username, file1=listed_files[0],
+        jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
+        return render_template("fileslist.html", username=username, jwt_value=jwt_value, file1=listed_files[0],
                               file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
     else:                  
         return render_template("base.html", message='Nie zalogowano.')
@@ -64,15 +65,14 @@ def filesList():
 @app.route('/zychp/webapp/upload', methods=['GET', 'POST'])
 def upload():
     username = checkUserLogin()
-    n_to_upload = 5
+    jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
+    
+    n_to_upload = 5 - countUserFiles(username)
     if (username):
         if request.method == 'POST':
             return redirect('/zychp/webapp/fileslist')
         else:
-            jwt_value = jwt.encode({'user': username}, secret_jwt, algorithm='HS256').decode('utf-8')
-
             print("jwt_value: {}".format(jwt_value))
-
             return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
 

@@ -47,7 +47,7 @@ def upload():
         return redirect("/zychp/webapp/fileslist")
     else:
         return "No auth"
-     
+
 
 def listUserFiles(username):
     userpath = getUserDirPath(username)
