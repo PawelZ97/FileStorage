@@ -7,9 +7,10 @@
 {% block content %}
 <div class="formClass">
     <div class="formheaderClass">
-        <a href="/zychp/webapp/logout">Wyloguj</a><br>
+        <a href="/zychp/webapp/logout">Wyloguj</a>
         <br>
-        Witaj {{ username }}! Możesz wgrać jeszcze {{n_to_upload}} plików<br>
+        <br>
+        Witaj {{ username }}! Możesz wgrać jeszcze {{n_to_upload}} plików<br>    
         <h3>Dodaj pliki:</h3>
     </div>
     <div class="descFormClass">
@@ -22,13 +23,10 @@
     <div class="formInputClass">
         <section>
             <form id="formRegister" method="POST" action="/zychp/dl/upload" enctype="multipart/form-data">
-                <div class="formDivClass"> <input class="formElement" name="file1" type="file" /></div>
-                <div class="formDivClass"> <input class="formElement" name="file2" type="file" /></div>
-                <div class="formDivClass"> <input class="formElement" name="file3" type="file" /></div>
-                <div class="formDivClass"> <input class="formElement" name="file4" type="file" /></div>
-                <div class="formDivClass"> <input class="formElement" name="file5" type="file" /></div>
+                {% for i in range(1,6) %}
+                <div class="formDivClass"> <input class="formElement" name="file{{i}}" type="file" /></div>
+                {% endfor %}
                 <div class="formDivClass"> <input value="{{ jwt_value }}" name="jwt" type="hidden" /></div>
-
                 <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"/>
                 </div>
             </form>

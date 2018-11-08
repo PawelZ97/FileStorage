@@ -12,8 +12,6 @@ secret_jwt = open('NoSecretThere.cfg', 'rb').read().decode('utf-8')
 
 red = redis.Redis()
 
-listed_files=["Brak pliku","Brak pliku","Brak pliku","Brak pliku","Brak pliku"]
-
 @app.route('/zychp/webapp/base') 
 def baseTest():
     return render_template("base.html")
@@ -45,6 +43,9 @@ def logout():
         cookie_uuid = session['uuid']
         red.hdel('zychp:webapp:'+ cookie_uuid, 'login')
 
+        red.hdel('zychp:webapp:userfiles'+ getHash(username), 'fileslist')
+        red.hdel('zychp:webapp:userfiles'+ getHash(username), 'nfiles')
+
         session.pop('username',None)
         session.pop('uuid',None)
     return redirect('/zychp/webapp/login')
@@ -54,9 +55,13 @@ def logout():
 def filesList():
     username = checkUserLogin()
     if (username):
-        print("Pobierz liste")
+        redis_filelist = red.hget('zychp:webapp:userfiles'+ getHash(username), 'fileslist')
+        if (redis_filelist != None):
+            filelist = json.loads(redis_filelist)
+        else:
+            filelist = emptyLocalList()
         jwt_value = getToken(username)
-        return render_template("fileslist.html", username=username, jwt_value=jwt_value, fileslist=listed_files)
+        return render_template("fileslist.html", username=username, jwt_value=jwt_value, fileslist=filelist)
     else:                  
         return redirect('/zychp/webapp/login')
 
@@ -65,22 +70,15 @@ def filesList():
 def upload():
     username = checkUserLogin()
     if (username):
-        n_to_upload = 5 - countFiles()    
+        redis_n_files = red.hget('zychp:webapp:userfiles'+ getHash(username), 'nfiles')
+        if (redis_n_files != None):
+            n_files = redis_n_files
+            n_to_upload = 5 - int(n_files)
+        else:
+            n_to_upload = "..."   
         jwt_value = getToken(username)
-        print("jwt_value: {}".format(jwt_value))
         return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
-
-
-@app.route('/zychp/webapp/readfilesnames/<string:file1>/<string:file2>/<string:file3>/<string:file4>/<string:file5>')
-def readFilesNames(file1,file2,file3,file4,file5):
-    del listed_files[:]
-    listed_files.append(file1)
-    listed_files.append(file2)
-    listed_files.append(file3)
-    listed_files.append(file4)
-    listed_files.append(file5)
-    return redirect('/zychp/webapp/fileslist')
 
 
 def doLogin():
@@ -95,9 +93,9 @@ def doLogin():
             session['uuid'] = user_uuid
 
             red.hset('zychp:webapp:'+ user_uuid, 'login', username)
-
-            emptyLocalList()
-
+            
+            red.hdel('zychp:webapp:userfiles'+ getHash(username), 'fileslist')
+            red.hdel('zychp:webapp:userfiles'+ getHash(username), 'nfiles')
             return True
     return False
 
@@ -112,9 +110,9 @@ def checkUserLogin():
         else:
             redis_username=redis_username.decode('utf-8')
 
-        print("Uuid: {}".format(cookie_uuid))
-        print("Cookie_username: {}".format(cookie_username))
-        print("Redis_username: {}".format(redis_username))
+        #print("Uuid: {}".format(cookie_uuid))
+        #print("Cookie_username: {}".format(cookie_username))
+        #print("Redis_username: {}".format(redis_username))
 
         if cookie_username in users_credentials:
             if(redis_username == cookie_username):
@@ -137,20 +135,14 @@ def getUsersCredentials():
         users_credentials[user_data['login']] =  user_data['password']      
     return users_credentials
 
+def getHash(string):
+    string += secret_jwt
+    return hashlib.sha256(string.encode()).hexdigest() 
+
 def getToken(username):
-    jwt_value = jwt.encode({'user': username,'exp': datetime.datetime.utcnow()
+    jwt_value = jwt.encode({'username': username,'exp': datetime.datetime.utcnow()
      + datetime.timedelta(seconds=100)},secret_jwt, algorithm='HS256').decode('utf-8')
     return jwt_value
 
-def countFiles():
-    counter=0
-    for file in listed_files:
-        if(file!="Brak pliku"):
-            counter+=1
-    return counter
-
 def emptyLocalList():
-    del listed_files[:]
-    for i in range(5):
-        listed_files.append("Brak pliku")
-    return
+    return ["Brak pliku"] * 5
