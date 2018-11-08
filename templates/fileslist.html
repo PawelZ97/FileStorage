@@ -27,36 +27,14 @@
     <div class="descElement"> Plik 5: </div>
   </div>
   <div class="fileList">
+    {% for file in fileslist %}
     <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file1 }}" enctype="multipart/form-data">
+      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file1 }}" />
+        <input type="submit" value="{{ file }}" />
       </form>
     </div>
-    <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file2 }}" enctype="multipart/form-data">
-        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file2 }}" />
-      </form>
-    </div>
-    <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file3 }}" enctype="multipart/form-data">
-        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file3 }}" />
-      </form>
-    </div>
-    <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file4 }}" enctype="multipart/form-data">
-        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file4 }}" />
-      </form>
-    </div>
-    <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file5 }}" enctype="multipart/form-data">
-        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file5 }}" />
-      </form>
-    </div>
+    {% endfor %}
   </div>
   <div style="clear:both"></div>
 </div>

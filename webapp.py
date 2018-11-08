@@ -56,8 +56,7 @@ def filesList():
     if (username):
         print("Pobierz liste")
         jwt_value = getToken(username)
-        return render_template("fileslist.html", username=username, jwt_value=jwt_value, file1=listed_files[0],
-                              file2=listed_files[1],  file3=listed_files[2], file4=listed_files[3], file5=listed_files[4])
+        return render_template("fileslist.html", username=username, jwt_value=jwt_value, fileslist=listed_files)
     else:                  
         return redirect('/zychp/webapp/login')
 
