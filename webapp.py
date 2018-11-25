@@ -2,7 +2,6 @@ from flask import Flask, session, request, redirect, render_template, send_from_
 from werkzeug.utils import secure_filename
 import json, uuid, redis, jwt, os, datetime, hashlib
 
-# L4 Final
 
 app = Flask(__name__)
 
@@ -77,9 +76,9 @@ def upload():
             n_files = redis_n_files
             n_to_upload = 5 - int(n_files)
         else:
-            n_to_upload = "..."   
+            n_to_upload = 5   
         jwt_value = getToken(username)
-        return render_template("upload.html", username=username, n_to_upload=n_to_upload, jwt_value=jwt_value)
+        return render_template("upload.html", username=username, n_to_upload=n_to_upload, iterlist=range(1,n_to_upload+1), jwt_value=jwt_value)
     return render_template("base.html", message='Nie zalogowano.')
 
 
@@ -147,4 +146,4 @@ def getToken(username):
     return jwt_value
 
 def emptyLocalList():
-    return ["Brak pliku"] * 5
+    return [] 

@@ -15,12 +15,8 @@ def download(filename):
     username = getUserAndCheckAuth()
     if (username):
         userpath = getUserDirPath(username)
-        if (filename!="Brak pliku"):
-            print("File downloaded")
-            return send_from_directory(directory=userpath, filename=filename, as_attachment=True)
-        else: 
-            print("No file")
-            return redirect("/zychp/webapp/fileslist")
+        print("File downloaded")
+        return send_from_directory(directory=userpath, filename=filename, as_attachment=True)
     else:
         return redirect("/zychp/webapp/fileslist")
    
@@ -64,8 +60,6 @@ def getFilesNames():
 def listUserFiles(username):
     userpath = getUserDirPath(username)
     listed_files = os.listdir(userpath)
-    for i in range(len(listed_files), 5):
-        listed_files.append("Brak pliku")
     return listed_files
 
 def countUserFiles(username):

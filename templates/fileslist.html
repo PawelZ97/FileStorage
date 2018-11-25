@@ -14,26 +14,24 @@
     <br>
     <br>
     <form id="downloadForm" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
+      <form id="downloadForm" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
       <input value="{{ jwt_value }}" name="jwt" type="hidden" />
       <input type="submit" value="Odśwież listę plików" />
     </form>
     <h3>Twoje pliki:</h3>
   </div>
-  <div class="desc">
-    <div class="descElement"> Plik 1: </div>
-    <div class="descElement"> Plik 2: </div>
-    <div class="descElement"> Plik 3: </div>
-    <div class="descElement"> Plik 4: </div>
-    <div class="descElement"> Plik 5: </div>
-  </div>
   <div class="fileList">
+
     {% for file in fileslist %}
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
+        Plik {{loop.index}}:
         <input value="{{ jwt_value }}" name="jwt" type="hidden" />
         <input type="submit" value="{{ file }}" />
       </form>
     </div>
+    {% else %}
+    Brak plików
     {% endfor %}
   </div>
   <div style="clear:both"></div>
