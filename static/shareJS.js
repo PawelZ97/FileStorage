@@ -1,8 +1,12 @@
   
 function shareButtonClicked(){
-  var copyText = document.getElementById("myInput");
+  var copyText = document.getElementById("linkInput");
   copyText.select();
   document.execCommand("copy");
+  console.log("2")
 }
 
-  document.getElementById("copyButton").addEventListener(onclick,shareButtonClicked())
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById("copyButton").addEventListener("click",shareButtonClicked);
+  console.log("1");
+}, false);

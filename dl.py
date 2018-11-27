@@ -19,7 +19,17 @@ def download(filename):
         return send_from_directory(directory=userpath, filename=filename, as_attachment=True)
     else:
         return redirect("/zychp/webapp/fileslist")
-   
+
+@app.route('/zychp/dl/sharedl/<string:jwtToken>', methods=['GET'])
+def shareDownload(jwtToken):
+    try:
+        decoded = jwt.decode(jwtToken, secret_jwt, algorithms='HS256')
+        path = getUserDirPath(decoded['username'])
+        filename = decoded['filename']
+        return send_from_directory(directory=path, filename=filename, as_attachment=True)
+    except jwt.exceptions.DecodeError:
+        print("JWT wrong signature")
+    return redirect("/zychp/webapp/login")   
 
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():

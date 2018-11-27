@@ -30,7 +30,8 @@
       </form>
     </div>
     <div class="shareElement">
-      <form id="shareForm" method="POST" action="/zychp/webapp/sharelink/{{ file }}" enctype="multipart/form-data">
+      <form id="shareForm" method="POST" action="/zychp/webapp/sharelink" enctype="multipart/form-data">
+        <input value="{{file}}" name="filename" type="hidden" />
         <input type="submit" value="Udostępnij" />
       </form>
     </div>

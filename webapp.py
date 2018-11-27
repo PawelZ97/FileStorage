@@ -65,6 +65,19 @@ def filesList():
         return render_template("fileslist.html", username=username, jwt_value=jwt_value, fileslist=filelist)
     else:                  
         return redirect('/zychp/webapp/login')
+    
+@app.route('/zychp/webapp/sharelink', methods=['POST'])
+def share():
+    username = checkUserLogin()
+    if (username):
+        filename = request.form['filename']
+        if(filename):
+            jwt_value = jwt.encode({'username': username,'filename': filename},secret_jwt, algorithm='HS256').decode('utf-8')
+            link = "https://pi.iem.pw.edu.pl/zychp/dl/sharedl/" + jwt_value
+            return render_template("share.html", link = link)
+        else:
+            return render_template("base.html", message='Wystąpił błąd.')
+    return render_template("base.html", message='Nie zalogowano.')
 
 
 @app.route('/zychp/webapp/upload', methods=['GET', 'POST'])
