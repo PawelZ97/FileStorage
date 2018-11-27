@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<link rel="stylesheet" type="text/css" href="https://pi.iem.pw.edu.pl/~zychp/files/P5/fileslistStyle.css">
+<script type="text/javascript" src="https://pi.iem.pw.edu.pl/~zychp/files/P5/shareJS.js"></script>
+{% endblock %}
+
+{% block content %}
+Link udostępniania pliku {{ file }}:
+<input type="text" value="{{link}}" id="linkInput">
+<button id=copyButton>Kopiuj</button>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<link rel="stylesheet" type="text/css" href="https://pi.iem.pw.edu.pl/~zychp/files/L4/fileslistStyle.css">
+<link rel="stylesheet" type="text/css" href="https://pi.iem.pw.edu.pl/~zychp/files/P5/fileslistStyle.css">
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,6 @@
     <h3>Twoje pliki:</h3>
   </div>
   <div class="fileList">
-
     {% for file in fileslist %}
     <div class="fileElement">
       <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
@@ -30,6 +29,12 @@
         <input type="submit" value="{{ file }}" />
       </form>
     </div>
+    <div class="shareElement">
+      <form id="shareForm" method="POST" action="/zychp/webapp/sharelink/{{ file }}" enctype="multipart/form-data">
+        <input type="submit" value="Udostępnij" />
+      </form>
+    </div>
+    <div class="clearElement"></div>
     {% else %}
     Brak plików
     {% endfor %}
