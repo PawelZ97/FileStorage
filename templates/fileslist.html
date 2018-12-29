@@ -1,45 +1,53 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P5/fileslistStyle.css">
+<link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P7/fileslistStyle.css">
 {% endblock %}
 
 {% block content %}
-<div class="formClass">
-  <div class="formheaderClass">
-    <a href="/zychp/webapp/logout">Wyloguj</a>
-    <br>
-    <br>
-    Witaj {{ username }}!
-    <br>
-    <br>
-    <form id="downloadForm" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
-      <form id="downloadForm" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
-      <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-      <input type="submit" value="Odśwież listę plików" />
-    </form>
-    <h3>Twoje pliki:</h3>
+<div class="col-12 col-lg-3 mainClass">
+  <a class="btn btn-primary d-inline float-right pad_btn" href="/zychp/webapp/logout" role="button">Logout</a>
+  <h5 class="d-inline float-left">Logged as: {{ username }}</h5>
+</div> 
+<div class="col-12 col-lg-9">
+  <h3 class="d-inline float-left">Your files:</h3>
+  <form class="d-inline float-right" method="POST" action="/zychp/dl/getfilesnames" enctype="multipart/form-data">
+    <input value="{{ jwt_value }}" name="jwt" type="hidden" />
+    <input class="btn btn-secondary pad_btn" type="submit" value="Refresh list">
+  </form>
+  <div class="table-responsive">
+    <table class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Filename</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in fileslist %}
+        <tr>
+          <th scope="row">{{loop.index}}</th>
+          <td>{{ file }}</td>
+          <td>
+            <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
+              <input value="{{ jwt_value }}" name="jwt" type="hidden" />
+              <input class="btn btn-primary" type="submit" value="Download">
+            </form>
+          </td>
+          <td>
+            <form id="shareForm" method="POST" action="/zychp/webapp/sharelink" enctype="multipart/form-data">
+              <input value="{{file}}" name="filename" type="hidden" />
+              <input class="btn btn-secondary" type="submit" value="Share">
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        No files
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <div class="fileList">
-    {% for file in fileslist %}
-    <div class="fileElement">
-      <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
-        Plik {{loop.index}}:
-        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
-        <input type="submit" value="{{ file }}" />
-      </form>
-    </div>
-    <div class="shareElement">
-      <form id="shareForm" method="POST" action="/zychp/webapp/sharelink" enctype="multipart/form-data">
-        <input value="{{file}}" name="filename" type="hidden" />
-        <input type="submit" value="Udostępnij" />
-      </form>
-    </div>
-    <div class="clearElement"></div>
-    {% else %}
-    Brak plików
-    {% endfor %}
-  </div>
-  <div style="clear:both"></div>
 </div>
 {% endblock %}

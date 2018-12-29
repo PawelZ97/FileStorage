@@ -1,28 +1,13 @@
-.formheaderClass
-{
-    padding-bottom: 5px;
+h3 {
+    color: white;
+    padding: 15px;
 }
 
-.fileList
-{
-    float: left;
+h5 {
+    color: white;
+    padding: 15px;
 }
 
-.fileElement
-{
-    height: 35px;
-    max-width: 700px;
-    width: 600px;
-    float: left;
-}
-
-.shareElement
-{
-    height: 35px;
-    float: left;
-}
-
-.clearElement
-{
-    clear: both;
+.pad_btn {
+    margin: 15px;
 }
