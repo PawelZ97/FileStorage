@@ -1,35 +1,45 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P7/uploadStyle.css">
 {% endblock %}
 
 {% block content %}
-<div class="formClass">
-    <div class="formheaderClass">
-        <a href="/zychp/webapp/logout">Wyloguj</a>
-        <br>
-        <br>
-        Witaj {{ username }}! Możesz wgrać jeszcze {{n_to_upload}} pliki/-ów<br>    
-        <h3>Dodaj pliki:</h3>
-    </div>
-    <div class="formInputClass">
-        <section>
-            <form id="formRegister" method="POST" action="/zychp/dl/upload" enctype="multipart/form-data">
-                {% for i in iterlist %}
-                <div class="formDivClass"> Plik {{i}}: <input class="formElement" name="file{{i}}" type="file" /></div>
-                {% else %}
-                Brak miejsca
-                {% endfor %}
-                <div class="formDivClass"> <input value="{{ jwt_value }}" name="jwt" type="hidden" /></div>
-                <div class="formDivClass"> <input id="submitForm" class=".formElement" name="Send" type="submit"/>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="errClass">
-        <div id="firstnameErr" class="errTextClass"> </div>
-    </div>
-    <div style="clear:both"></div>
+<div class="col-12 col-lg-3 mainClass">
+    <a class="btn btn-primary d-inline float-right pad_btn" href="/zychp/webapp/logout" role="button">Logout</a>
+    <h5 class="d-inline float-left">Logged as: {{ username }}</h5>
 </div>
+
+<div class="col-12 col-lg-9">
+    <h3 class="d-inline float-left">You can upload {{n_to_upload}} files:</h3>
+    <form id="formRegister" method="POST" action="/zychp/dl/upload" enctype="multipart/form-data">
+        <div class="table-responsive">
+            <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in iterlist %}
+                    <tr>
+                        <th scope="row">{{loop.index}}</th>
+                        <td>
+                            <input class="formElement" name="file{{i}}" type="file" />
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <th scope="row">Error</th>                    
+                        <td>You can't upload more files.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input value="{{ jwt_value }}" name="jwt" type="hidden" />
+        <input class="btn btn-primary float-right pad_btn" type="submit" value="Upload">
+    </form>
+</div>
+
 {% endblock %}

@@ -1,38 +1,5 @@
-.formheaderClass
+.logdiv
 {
-    padding-bottom: 5px;
-}
-
-.descFormDiv
-{
-    float: left;
-    padding-right: 10px;
-}
-
-.descFormElement
-{
-    text-align: right;
-    height: 35px;
-}
-
-.formLoginDiv
-{
-    float: left;
-}
-
-.formElement
-{
-    height: 35px;
-}
-
-.messageDiv
-{
-    float: left;
-    padding-left: 30px;
-}
-
-.messageElement
-{
-    color: red;
-    font: bolder;
+    text-align: center;
+    padding: 30px;
 }

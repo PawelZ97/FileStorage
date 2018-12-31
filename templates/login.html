@@ -5,18 +5,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="formClass">
-  <div class="formheaderClass">
-    <h3>Zaloguj:</h3>
-  </div>
-  <div class="formLoginDiv">
-    <form id="formLogin" method="POST" action="" enctype="multipart/form-data">
-      <div class="formElement"> <input id="submitForm" class=".formElement" name="login" type="submit" value="Zaloguj z wykorzystaniem auth0" /></div>
-    </form>
-  </div>
-  <div class="messageDiv">
-    <div class="messageElement">{{ error }}</div>
-  </div>
-  <div style="clear:both"></div>
+<div class="col-12 logdiv">
+  <h3>Login</h3>
+  <form id="formLogin" method="POST" action="" enctype="multipart/form-data">
+    <input class="btn btn-primary pad_btn" type="submit" value="Login with auth0.com">
+  </form>
 </div>
+
 {% endblock %}
