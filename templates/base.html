@@ -3,49 +3,59 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>PI</title>
-    <link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P5/baseStyle.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P7/baseStyle.css">
     {% block header %}
     {% endblock %}
 </head>
 
 <body>
-    <div class="pageClass">
-        <div class="headerClass">
-            <h1>Programowanie internetowe</h1>
+    <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
+        <img src="https://edi.iem.pw.edu.pl/~zychp/files/P7/up.svg" width="30" height="30" alt="">
+        <span class="navbar-brand mb-0 h1">PI Storage</span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://isod.ee.pw.edu.pl">ISOD <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/zychp/webapp/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/zychp/webapp/fileslist">Files</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/zychp/webapp/upload">Upload</a>
+                </li>
+            </ul>
         </div>
-        <div class="navClass">
-            <nav>
-                <div class="navLinkClass">
-                    <a href="https://isod.ee.pw.edu.pl">ISOD</a>
-                </div>
-                <div class="navLinkClass">
-                    <a href="/zychp/webapp/base">Base</a>
-                </div>
-                <div class="navLinkClass">
-                    <a href="/zychp/webapp/register">Register</a>
-                </div>
-                <div class="navLinkClass">
-                    <a href="/zychp/webapp/login">Login</a>
-                </div>
-                <div class="navLinkClass">
-                    <a href="/zychp/webapp/fileslist">Files</a>
-                </div>
-                <div class="navLinkClass">
-                    <a href="/zychp/webapp/upload">Upload</a>
-                </div>
-                <div style="clear: both"></div>
-            </nav>
-        </div>
-        <div class="mainClass">
+    </nav>
+    <div class="container">
+        <div class="row">
             {% block content %}
             {{ message }}
             {% endblock %}
         </div>
-        <footer>
-            PI 2018 | Paweł Zych
-        </footer>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">PI 2018 | Paweł Zych</span>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
 </body>
+<!-- /* Background pattern from Toptal Subtle Patterns */ -->
 
 </html>

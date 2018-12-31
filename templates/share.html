@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<link rel="stylesheet" type="text/css" href="https://edi.iem.pw.edu.pl/~zychp/files/P5/fileslistStyle.css">
-<script type="text/javascript" src="https://edi.iem.pw.edu.pl/~zychp/files/P5/share.js"></script>
+<script type="text/javascript" src="https://edi.iem.pw.edu.pl/~zychp/files/P7/shareJS.js"></script>
 {% endblock %}
 
 {% block content %}
-Link udostępniania pliku:
-<input type="text" value="{{link}}" id="linkInput">
-<button id=copyButton>Kopiuj</button>
+<div class="col-12 logdiv">
+        <h3>Share link:</h3>
+        <input type="text" value="{{link}}" id="linkInput">
+        <button id="copyButton" class="btn btn-primary" type="submit">Copy</button>
+</div>
 {% endblock %}
