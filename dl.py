@@ -45,7 +45,7 @@ def upload():
                 f = request.files[filee]
                 f.save(userpath + secure_filename(f.filename))
                 n_uploaded += 1
-                produceConversion(userpath + secure_filename(f.filename))
+                produceConversion(username,userpath,secure_filename(f.filename))
             else:
                 print("File upload aborted")
         print("Files uploaded")
@@ -101,13 +101,13 @@ def getUserAndCheckAuth():
         print("JWT wrong signature")
     return False
 
-def produceConversion(filename):
+def produceConversion(username,userpath,filename):
     if (filename.endswith('.png') or filename.endswith('.jpg')):
         exchange = 'zychp-xchange'
         exchange_type = 'direct'
         routing_key = 'zychp'
 
-        body ='{}'.format(filename)
+        body ='{}'.format(json.dumps({'username': username, 'userpath': userpath, 'filename': filename}))
 
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
