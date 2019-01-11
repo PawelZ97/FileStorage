@@ -91,6 +91,9 @@ def crateUploadDirectoryIfNotExist(username):
     userpath = getUserDirPath(username)
     if not os.path.exists(userpath):
         os.makedirs(userpath)
+    thumbpath = getThumbDirPath(username)
+    if not os.path.exists(thumbpath):
+        os.makedirs(thumbpath)
     return
 
 def getHash(string):
@@ -99,6 +102,9 @@ def getHash(string):
 
 def getUserDirPath(username):
     return 'userfiles/' + secure_filename(getHash(username)) + '/'
+
+def getThumbDirPath(username):
+    return 'thumbs/' + secure_filename(username) + '/'
 
 def getUserAndCheckAuth():
     encoded = request.form['jwt']
@@ -117,7 +123,7 @@ def produceConversion(username,userpath,filename):
         exchange_type = 'direct'
         routing_key = 'zychp'
 
-        body ='{}'.format(json.dumps({'username': username, 'userpath': userpath, 'filename': filename}))
+        body ='{}'.format(json.dumps({'username': secure_filename(username), 'userpath': userpath, 'filename': filename}))
 
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
