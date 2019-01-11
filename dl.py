@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import json, os, jwt, redis, hashlib
+import pika
 
 
 app = Flask(__name__)
@@ -44,6 +45,7 @@ def upload():
                 f = request.files[filee]
                 f.save(userpath + secure_filename(f.filename))
                 n_uploaded += 1
+                produceConversion(userpath + secure_filename(f.filename))
             else:
                 print("File upload aborted")
         print("Files uploaded")
@@ -69,7 +71,7 @@ def getFilesNames():
 
 def listUserFiles(username):
     userpath = getUserDirPath(username)
-    listed_files = os.listdir(userpath)
+    listed_files = [filename for filename in os.listdir(userpath) if not filename.startswith('.')]
     return listed_files
 
 def countUserFiles(username):
@@ -98,3 +100,25 @@ def getUserAndCheckAuth():
     except jwt.exceptions.DecodeError:
         print("JWT wrong signature")
     return False
+
+def produceConversion(filename):
+    if (filename.endswith('.png') or filename.endswith('.jpg')):
+        exchange = 'zychp-xchange'
+        exchange_type = 'direct'
+        routing_key = 'zychp'
+
+        body ='{}'.format(filename)
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
+
+        channel.exchange_declare(exchange=exchange,
+                         exchange_type=exchange_type)
+        channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=body)
+        print("Sent '{}'".format(body))
+        connection.close()
+    else:
+        print("Not graphics")
+    return
