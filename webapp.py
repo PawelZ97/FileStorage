@@ -98,7 +98,7 @@ def filesList():
         else:
             filelist = emptyLocalList()
         jwt_value = getToken(username)
-        return render_template("fileslist.html", username=username, jwt_value=jwt_value, fileslist=filelist)
+        return render_template("fileslist.html", username=username, sec_username=secure_filename(username), jwt_value=jwt_value, fileslist=filelist)
     else:                  
         return redirect('/zychp/webapp/login')
     

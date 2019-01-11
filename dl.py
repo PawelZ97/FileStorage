@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import json, os, jwt, redis, hashlib
+import pika
 
 
 app = Flask(__name__)
@@ -31,6 +32,16 @@ def shareDownload(jwtToken):
         print("JWT wrong signature")
     return redirect("/zychp/webapp/login")   
 
+@app.route('/zychp/dl/thumb/<string:username>/<string:filename>', methods=['GET'])
+def thumbDownload(username,filename):
+    try:
+        path = 'thumbs/' + username + '/'
+        return send_from_directory(directory=path, filename=filename, as_attachment=True)
+    except jwt.exceptions.DecodeError:
+        print("Can't serve thumb")
+    return redirect("/zychp/webapp/login")   
+
+
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():
     username = getUserAndCheckAuth()
@@ -44,6 +55,7 @@ def upload():
                 f = request.files[filee]
                 f.save(userpath + secure_filename(f.filename))
                 n_uploaded += 1
+                produceConversion(username,userpath,secure_filename(f.filename))
             else:
                 print("File upload aborted")
         print("Files uploaded")
@@ -69,7 +81,7 @@ def getFilesNames():
 
 def listUserFiles(username):
     userpath = getUserDirPath(username)
-    listed_files = os.listdir(userpath)
+    listed_files = [filename for filename in os.listdir(userpath) if not filename.startswith('.')]
     return listed_files
 
 def countUserFiles(username):
@@ -79,6 +91,9 @@ def crateUploadDirectoryIfNotExist(username):
     userpath = getUserDirPath(username)
     if not os.path.exists(userpath):
         os.makedirs(userpath)
+    thumbpath = getThumbDirPath(username)
+    if not os.path.exists(thumbpath):
+        os.makedirs(thumbpath)
     return
 
 def getHash(string):
@@ -87,6 +102,9 @@ def getHash(string):
 
 def getUserDirPath(username):
     return 'userfiles/' + secure_filename(getHash(username)) + '/'
+
+def getThumbDirPath(username):
+    return 'thumbs/' + secure_filename(username) + '/'
 
 def getUserAndCheckAuth():
     encoded = request.form['jwt']
@@ -98,3 +116,25 @@ def getUserAndCheckAuth():
     except jwt.exceptions.DecodeError:
         print("JWT wrong signature")
     return False
+
+def produceConversion(username,userpath,filename):
+    if (filename.endswith('.png') or filename.endswith('.jpg')):
+        exchange = 'zychp-xchange'
+        exchange_type = 'direct'
+        routing_key = 'zychp'
+
+        body ='{}'.format(json.dumps({'username': secure_filename(username), 'userpath': userpath, 'filename': filename}))
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
+
+        channel.exchange_declare(exchange=exchange,
+                         exchange_type=exchange_type)
+        channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=body)
+        print("Sent '{}'".format(body))
+        connection.close()
+    else:
+        print("Not graphics")
+    return

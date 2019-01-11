@@ -19,6 +19,7 @@
       <thead>
         <tr>
           <th scope="col">#</th>
+          <th scope="col"></th>
           <th scope="col">Filename</th>
           <th scope="col"></th>
           <th scope="col"></th>
@@ -28,6 +29,10 @@
         {% for file in fileslist %}
         <tr>
           <th scope="row">{{loop.index}}</th>
+          <td>
+            <img src="https://edi.iem.pw.edu.pl/zychp/dl/thumb/{{sec_username}}/{{ file }}" alt="" class="img-thumbnail" 
+            onerror="this.onerror=null;this.src='https://edi.iem.pw.edu.pl/~zychp/files/P8/default.png';">
+          </td>
           <td>{{ file }}</td>
           <td>
             <form id="downloadForm" method="POST" action="/zychp/dl/download/{{ file }}" enctype="multipart/form-data">
