@@ -32,6 +32,16 @@ def shareDownload(jwtToken):
         print("JWT wrong signature")
     return redirect("/zychp/webapp/login")   
 
+@app.route('/zychp/dl/thumb/<string:username>/<string:filename>', methods=['GET'])
+def thumbDownload(username,filename):
+    try:
+        path = 'thumbs/' + username + '/'
+        return send_from_directory(directory=path, filename=filename, as_attachment=True)
+    except jwt.exceptions.DecodeError:
+        print("Can't serve thumb")
+    return redirect("/zychp/webapp/login")   
+
+
 @app.route('/zychp/dl/upload', methods=['POST'])
 def upload():
     username = getUserAndCheckAuth()
